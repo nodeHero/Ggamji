@@ -6,20 +6,20 @@ var config = {
   development: {
     root: rootPath,
     app: {
-      name: 'mandalart'
+      name: 'ggamji'
     },
     port: process.env.PORT || 3000,
-    db: 'mongodb://localhost:27017/mandalart'
-    // db: 'mongodb://localhost/mandalart-dev'
+    db: 'mongodb://localhost:27017/ggamji'
+    // db: 'mongodb://localhost/ggamji-dev'
   },
 
   production: {
     root: rootPath,
     app: {
-      name: 'mandalart'
+      name: 'ggamji'
     },
     port: process.env.PORT || 3000,
-    db: 'mongodb://localhost/mandalart'
+    db: 'mongodb://localhost/ggamji'
   }
 };
 

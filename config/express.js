@@ -58,5 +58,4 @@ module.exports = function(app, config) {
       title: 'error'
     });
   });
-
 };
