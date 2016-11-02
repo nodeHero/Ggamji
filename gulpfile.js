@@ -11,8 +11,8 @@ var pkg = require('./package.json'),
   fpath = {
     'jssrc': './app/js',
     'jsdist': './public/js',
-    'sasssrc': './app/sass',
-    'sassdist': './public/css'
+    'scsssrc': './app/scss',
+    'scssdist': './public/css'
   };
 
 gulp.task('clean', function(cb) {
@@ -20,7 +20,7 @@ gulp.task('clean', function(cb) {
 
   return del([
     fpath.jsdist +'/*.js', // public/js/*.js
-    fpath.sassdist +'/*.css', // public/css/*.js
+    fpath.scssdist +'/*.css', // public/css/*.js
   ], cb);
 });
 
@@ -47,7 +47,7 @@ gulp.task('jsmerge', function() {
     .pipe(livereload());
 });
 
-gulp.task('sassmerge', function() {
+gulp.task('scssmerge', function() {
   var builder = require('gulp-module-builder'),
     header = require('gulp-header'),
     footer = require('gulp-footer'),
@@ -62,27 +62,27 @@ gulp.task('sassmerge', function() {
       }
     };
 
-  return gulp.src(fpath.sasssrc +'/modules.sass.json')
-    .pipe(builder({ext:'sass'}))
+  return gulp.src(fpath.scsssrc +'/modules.scss.json')
+    .pipe(builder({ext:'scss'}))
     .pipe(header(trailer.header, headerOpt))
     .pipe(footer(trailer.footer))
-    .pipe(gulp.dest(fpath.sassdist));
+    .pipe(gulp.dest(fpath.scssdist));
 });
 
-gulp.task('sass', function () {
+gulp.task('scss', function () {
   var del = require('del');
 
-  gulp.src(fpath.sassdist + '/*.sass')
+  gulp.src(fpath.scssdist + '/*.scss')
     .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest(fpath.sassdist))
+    .pipe(gulp.dest(fpath.scssdist))
     .pipe(livereload());
 
-  del(fpath.sassdist + '/*.sass');
+  del(fpath.scssdist + '/*.scss');
 });
 
 gulp.task('watch', function () {
-  gulp.watch(fpath.sasssrc + '/**/*.sass', function() {
-    runsync('sassmerge', 'sass');
+  gulp.watch(fpath.scsssrc + '/**/*.scss', function() {
+    runsync('scssmerge', 'scss');
   });
   gulp.watch('./app/js/**/*.js', function() {
     runsync('jsmerge');
@@ -125,9 +125,9 @@ gulp.task('uglify', function() {
 });
 
 gulp.task('default', function(done) {
-  runsync('clean', 'sassmerge', 'sass', 'jsmerge', 'uglify', done);
+  runsync('clean', 'scssmerge', 'scss', 'jsmerge', 'uglify', done);
 });
 
 gulp.task('local', function(done) {
-  runsync('clean', 'sassmerge', 'sass', 'jsmerge', 'develop', 'watch', done);
+  runsync('clean', 'scssmerge', 'scss', 'jsmerge', 'develop', 'watch', done);
 });
