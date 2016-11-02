@@ -1,18 +1,18 @@
-const appname = "mandalart";
+const appname = "ggamji";
 
 var gulp = require('gulp'),
   nodemon = require('gulp-nodemon'),
   plumber = require('gulp-plumber'),
   livereload = require('gulp-livereload'),
-  less = require('gulp-less'),
+  sass = require('gulp-sass'),
   runsync = require('run-sequence');
 
 var pkg = require('./package.json'),
   fpath = {
     'jssrc': './app/js',
     'jsdist': './public/js',
-    'lesssrc': './app/less',
-    'lessdist': './public/css'
+    'sasssrc': './app/sass',
+    'sassdist': './public/css'
   };
 
 gulp.task('clean', function(cb) {
@@ -20,7 +20,7 @@ gulp.task('clean', function(cb) {
 
   return del([
     fpath.jsdist +'/*.js', // public/js/*.js
-    fpath.lessdist +'/*.css', // public/css/*.js
+    fpath.sassdist +'/*.css', // public/css/*.js
   ], cb);
 });
 
@@ -47,7 +47,7 @@ gulp.task('jsmerge', function() {
     .pipe(livereload());
 });
 
-gulp.task('lessmerge', function() {
+gulp.task('sassmerge', function() {
   var builder = require('gulp-module-builder'),
     header = require('gulp-header'),
     footer = require('gulp-footer'),
@@ -62,27 +62,27 @@ gulp.task('lessmerge', function() {
       }
     };
 
-  return gulp.src(fpath.lesssrc +'/modules.less.json')
-    .pipe(builder({ext:'less'}))
+  return gulp.src(fpath.sasssrc +'/modules.sass.json')
+    .pipe(builder({ext:'sass'}))
     .pipe(header(trailer.header, headerOpt))
     .pipe(footer(trailer.footer))
-    .pipe(gulp.dest(fpath.lessdist));
+    .pipe(gulp.dest(fpath.sassdist));
 });
 
-gulp.task('less', function () {
+gulp.task('sass', function () {
   var del = require('del');
 
-  gulp.src(fpath.lessdist + '/*.less')
-    .pipe(less())
-    .pipe(gulp.dest(fpath.lessdist))
+  gulp.src(fpath.sassdist + '/*.sass')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest(fpath.sassdist))
     .pipe(livereload());
 
-  del(fpath.lessdist + '/*.less');
+  del(fpath.sassdist + '/*.sass');
 });
 
 gulp.task('watch', function () {
-  gulp.watch(fpath.lesssrc + '/**/*.less', function() {
-    runsync('lessmerge', 'less');
+  gulp.watch(fpath.sasssrc + '/**/*.sass', function() {
+    runsync('sassmerge', 'sass');
   });
   gulp.watch('./app/js/**/*.js', function() {
     runsync('jsmerge');
@@ -125,9 +125,9 @@ gulp.task('uglify', function() {
 });
 
 gulp.task('default', function(done) {
-  runsync('clean', 'lessmerge', 'less', 'jsmerge', 'uglify', done);
+  runsync('clean', 'sassmerge', 'sass', 'jsmerge', 'uglify', done);
 });
 
 gulp.task('local', function(done) {
-  runsync('clean', 'lessmerge', 'less', 'jsmerge', 'develop', 'watch', done);
+  runsync('clean', 'sassmerge', 'sass', 'jsmerge', 'develop', 'watch', done);
 });
