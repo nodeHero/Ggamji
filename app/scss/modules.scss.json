@@ -1,0 +1,5 @@
+{
+  "common" : [
+    "app/scss/common.scss"
+  ]
+}
