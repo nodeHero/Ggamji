@@ -1,7 +1,10 @@
 {
-  "common" : [
+  "common": [
     "app/js/lib/jquery-1.10.1.min.js",
     "app/js/modernizr-2.8.3.min.js",
     "app/js/respond.min.js"
+  ],
+  "ggamji": [
+    "app/js/sources/ggamji/*"
   ]
 }
