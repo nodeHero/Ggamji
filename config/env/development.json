@@ -1,5 +1,5 @@
 {
-  "db": "mongodb://localhost:27017/ggamji",
+  "db": "mongodb://nodeHero:ggamji@ds050559.mlab.com:50559/ggamji",
   "app": {
     "name": "<%= appName %> - <%= appDescription %> - Development"
   }

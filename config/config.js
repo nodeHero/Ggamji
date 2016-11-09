@@ -9,8 +9,7 @@ var config = {
       name: 'ggamji'
     },
     port: process.env.PORT || 3000,
-    db: 'mongodb://localhost:27017/ggamji'
-    // db: 'mongodb://localhost/ggamji-dev'
+    db: 'mongodb://nodeHero:ggamji@ds050559.mlab.com:50559/ggamji'
   },
 
   production: {
@@ -19,7 +18,7 @@ var config = {
       name: 'ggamji'
     },
     port: process.env.PORT || 3000,
-    db: 'mongodb://localhost/ggamji'
+    db: 'mongodb://nodeHero:ggamji@ds050559.mlab.com:50559/ggamji'
   }
 };
 
