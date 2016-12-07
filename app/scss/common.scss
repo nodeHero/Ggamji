@@ -350,10 +350,9 @@ html, body {
       background: transparent;
       text-align: center;
       font-size: 80px;
-
-      &.right {
-        color: #8BC34A;
-      };
+      position: absolute;
+      top: 0;
+      left: 0;
     }
   }
 }

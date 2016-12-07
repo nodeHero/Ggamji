@@ -1,97 +1,76 @@
 var Ggamji = function () {
-  this.init();
+  this.$input = $('#enter_data');
+  this.$target = $('#target');
+  this.targetText = this.$target.text();
+  this.$counter = $('#counter');
+  this.countNumber = 0;
+
+  this.initEvent();
 };
 
-Ggamji.prototype.init = function () {
-  var _that = this;
+Ggamji.prototype = {
 
-  _that.$input = $('#enter_data');
-  _that.inputData = null;
-  _that.inputData = null;
-  _that.$target = $('#target');
-  _that.targetText = _that.$target.text();
-  _that.$counter = $('#counter');
-  _that.countNumber = 0;
+  initEvent: function () {
+    this.startGgamji();
+    this.inputEvent();
+  },
 
-  _that.initEvent();
-};
+  startGgamji: function () {
+    var _this = this;
 
-Ggamji.prototype.initEvent = function () {
-  var _that = this;
+    $(document).on({
 
-  _that.startGgamji();
-  _that.inputEvent();
-};
-
-Ggamji.prototype.startGgamji = function () {
-  var _that = this;
-
-  $(document).on({
-    keydown: function () {
-      _that.$input.focus();
-    }
-  });
-};
-
-Ggamji.prototype.inputEvent = function () {
-  var _that = this;
-
-  _that.$input.on({
-    keydown: function (event) {
-      var $self = $(this);
-      var inputData = $self.val();
-
-      console.log(event.which);
-
-      switch (event.which) {
-        case 13:  // enter key
-          if (inputData == _that.targetText) {
-            _that.iterationCount();
-            _that.resetInput();
-          } else {
-            _that.wrongAnswerEvent()
-          }
-          break;
+      keydown: function () {
+        _this.$input.focus();
       }
-    },
-    keyup: function (event) {
-      _that.rightAnswerEvent($(this));
-    }
-  });
-};
 
-Ggamji.prototype.rightAnswerEvent = function ($self) {
-  var _that = this;
-  var inputData = $self.val();
+    });
+  },
 
-  if (inputData === _that.targetText) {
-    _that.$input.addClass('right');
-  } else {
-    _that.$input.removeClass('right');
+  inputEvent: function () {
+    var _this = this;
+
+    this.$input.on({
+
+      keydown: function (event) {
+        var $this = $(this);
+
+        var inputData = $this.val();
+
+        switch (event.which) {
+          case 13:  // Enter key
+
+            if (inputData == _this.targetText) {
+              _this.iterationCount();
+              _this.resetInput();
+            } else {
+              _this.wrongAnswerEvent()
+            }
+            break;
+        }
+      }
+
+    });
+  },
+
+  wrongAnswerEvent: function () {
+    var duration = 50;
+
+    this.$input
+      .animate({marginLeft: -10}, duration)
+      .animate({marginLeft: 10}, duration)
+      .animate({marginLeft: -10}, duration)
+      .animate({marginLeft: 10}, duration)
+      .animate({marginLeft: 0}, duration / 2);
+  },
+
+  iterationCount: function () {
+    this.countNumber++;
+    this.$counter.text(this.countNumber);
+  },
+
+  resetInput: function () {
+    this.$input.val('');
   }
-};
 
-Ggamji.prototype.wrongAnswerEvent = function () {
-  var _that = this;
-  var duration = 50;
-
-  _that.$input
-    .animate({ marginLeft: -10 }, duration)
-    .animate({ marginLeft: 10 }, duration)
-    .animate({ marginLeft: -10}, duration)
-    .animate({ marginLeft: 10}, duration)
-    .animate({ marginLeft: 0 }, duration / 2);
-};
-
-Ggamji.prototype.iterationCount = function () {
-  var _that = this;
-
-  _that.countNumber++;
-  _that.$counter.text(_that.countNumber);
-};
-
-Ggamji.prototype.resetInput = function () {
-  var _that = this;
-
-  _that.$input.val('');
 };
