@@ -1,5 +1,6 @@
 var Ggamji = function () {
   this.$input = $('#enter_data');
+  this.inputData = '';
   this.$target = $('#target');
   this.targetText = this.$target.text();
   this.$counter = $('#counter');
@@ -33,24 +34,44 @@ Ggamji.prototype = {
     this.$input.on({
 
       keydown: function (event) {
-        var $this = $(this);
-
-        var inputData = $this.val();
 
         switch (event.which) {
           case 13:  // Enter key
 
-            if (inputData == _this.targetText) {
-              _this.iterationCount();
-              _this.resetInput();
+            if (_this.inputData === _this.targetText) {
+              _this.correctAnswerEvent();
             } else {
               _this.wrongAnswerEvent()
             }
             break;
         }
+      },
+
+      input: function () {
+        var $this = $(this);
+        _this.inputData = $this.val();
+
+        if (_this.inputData === _this.targetText) {
+          _this.addCorrectColor();
+        } else {
+          _this.removeCorrectColor();
+        }
       }
 
     });
+  },
+
+  addCorrectColor: function () {
+    this.$input.addClass('correct');
+  },
+
+  removeCorrectColor: function () {
+    this.$input.removeClass('correct');
+  },
+
+  correctAnswerEvent: function () {
+    this.iterationCount();
+    this.resetInput();
   },
 
   wrongAnswerEvent: function () {
