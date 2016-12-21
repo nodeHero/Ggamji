@@ -1,57 +1,80 @@
-var Ggamji = function () {
-  this.$input = $('#enter_data');
-  this.inputData = '';
-  this.$target = $('#target');
-  this.targetText = this.$target.text();
-  this.$counter = $('#counter');
-  this.countNumber = 0;
+const KEY_ENTER = 13;
+const KEY_SPACE = 32;
 
-  this.initEvent();
-};
+class Ggamji {
 
-Ggamji.prototype = {
+  constructor() {
+    this.$input = $('#enter_data');
+    this.inputData = '';
+    this.$target = $('#target');
+    this.targetText = null;
+    this.$counter = $('#counter');
+    this.countNumber = 0;
+    this.sliceWord = null;
+    this.sliceData = {};
+    this.wordIndex = 0;
 
-  initEvent: function () {
+    this.initEvent();
+  }
+
+  initEvent() {
+    this.getSliceData();
+    this.setWord();
     this.startGgamji();
     this.inputEvent();
-  },
+  }
 
-  startGgamji: function () {
-    var _this = this;
+  getSliceData() {
+    this.sliceWord = new SliceWord;
+    this.sliceData = this.sliceWord.takeWordData;
+  }
+
+  setWord(wordIndex) {
+    this.$target.text(this.sliceData.totalWord[wordIndex || 0]);
+    this.targetText = this.$target.text();
+  }
+
+  startGgamji() {
+    let _this = this;
 
     $(document).on({
-
-      keydown: function () {
+      keydown: () => {
         _this.$input.focus();
       }
-
     });
-  },
+  }
 
-  inputEvent: function () {
-    var _this = this;
+  compareWord(_this) {
+    return $.trim(_this.inputData) === _this.targetText
+  }
+
+  inputEvent() {
+    let _this = this;
 
     this.$input.on({
-
       keydown: function (event) {
 
         switch (event.which) {
-          case 13:  // Enter key
-
-            if (_this.inputData === _this.targetText) {
+          case KEY_ENTER:
+            if (_this.compareWord(_this)) {
               _this.correctAnswerEvent();
             } else {
               _this.wrongAnswerEvent()
+            }
+            break;
+          case KEY_SPACE:
+            if (_this.compareWord(_this)) {
+              _this.correctAnswerEvent();
             }
             break;
         }
       },
 
       input: function () {
-        var $this = $(this);
+        let $this = $(this);
         _this.inputData = $this.val();
 
-        if (_this.inputData === _this.targetText) {
+        if (_this.compareWord(_this)) {
           _this.addCorrectColor();
         } else {
           _this.removeCorrectColor();
@@ -59,23 +82,24 @@ Ggamji.prototype = {
       }
 
     });
-  },
+  }
 
-  addCorrectColor: function () {
+  addCorrectColor() {
     this.$input.addClass('correct');
-  },
+  }
 
-  removeCorrectColor: function () {
+  removeCorrectColor() {
     this.$input.removeClass('correct');
-  },
+  }
 
-  correctAnswerEvent: function () {
+  correctAnswerEvent() {
     this.iterationCount();
+    this.nextWord();
     this.resetInput();
-  },
+  }
 
-  wrongAnswerEvent: function () {
-    var duration = 50;
+  wrongAnswerEvent() {
+    let duration = 50;
 
     this.$input
       .animate({marginLeft: -10}, duration)
@@ -83,15 +107,20 @@ Ggamji.prototype = {
       .animate({marginLeft: -10}, duration)
       .animate({marginLeft: 10}, duration)
       .animate({marginLeft: 0}, duration / 2);
-  },
+  }
 
-  iterationCount: function () {
+  iterationCount() {
     this.countNumber++;
     this.$counter.text(this.countNumber);
-  },
+  }
 
-  resetInput: function () {
+  resetInput() {
     this.$input.val('');
   }
 
-};
+  nextWord() {
+    this.wordIndex++;
+    this.setWord(this.wordIndex);
+  }
+
+}

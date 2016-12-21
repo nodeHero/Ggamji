@@ -1,4 +1,3 @@
-$(function () {
-  var ggamji = new Ggamji();
-
+$(() => {
+  new Ggamji();
 });
