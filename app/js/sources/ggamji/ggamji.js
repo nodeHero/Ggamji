@@ -6,6 +6,9 @@ var Ggamji = function () {
   this.$counter = $('#counter');
   this.countNumber = 0;
 
+  this.KEY_ENTER = 13;
+  this.KEY_SPACE = 32;
+
   this.initEvent();
 };
 
@@ -32,11 +35,9 @@ Ggamji.prototype = {
     var _this = this;
 
     this.$input.on({
-
       keydown: function (event) {
-
         switch (event.which) {
-          case 13:  // Enter key
+          case _this.KEY_ENTER:  // Enter key
 
             if (_this.inputData === _this.targetText) {
               _this.correctAnswerEvent();
@@ -46,7 +47,6 @@ Ggamji.prototype = {
             break;
         }
       },
-
       input: function () {
         var $this = $(this);
         _this.inputData = $this.val();
