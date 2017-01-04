@@ -1,5 +1,6 @@
 {
   "common" : [
+    "app/scss/reset.css",
     "app/scss/common.scss"
   ]
 }

@@ -1,3 +1,9 @@
+var data = {
+  "word1": "hello",
+  "Word2": "world",
+  "word3": "good"
+};
+
 var Ggamji = function () {
   this.$input = $('#enter_data');
   this.inputData = '';
