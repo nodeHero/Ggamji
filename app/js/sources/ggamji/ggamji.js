@@ -8,9 +8,11 @@ var Ggamji = function () {
   this.$input = $('#enter_data');
   this.inputData = '';
   this.$target = $('#target');
-  this.targetText = this.$target.text();
+  this.targetText = null;
   this.$counter = $('#counter');
   this.countNumber = 0;
+  this.words = null;
+  this.currentWordId = 0;
 
   this.KEY_ENTER = 13;
   this.KEY_SPACE = 32;
@@ -21,8 +23,41 @@ var Ggamji = function () {
 Ggamji.prototype = {
 
   initEvent: function () {
+    this.requestOneWord(this.currentWordId);
     this.startGgamji();
-    this.inputEvent();
+    this.addInputEventHandler();
+    this.addPrevEventHandler();
+    this.addNextEventHandler();
+  },
+
+  requestOneWord: function (wordId) {
+    if (wordId === undefined
+      || typeof wordId !== 'number'
+      || String(wordId).indexOf('.') !== -1) {
+      console.error('wrong word id!');
+      return false;
+    }
+
+    var _this = this;
+
+    $.ajax({
+      url: 'http://localhost:3000/words/' + wordId,
+      dataType: 'json',
+      success: function (data) {
+        if (data.name === undefined) console.log('result is not word!');
+        _this.setWord(data);
+      },
+      error: function (err) {
+        console.error(err);
+        _this.handleAjaxOneWord(false);
+      }
+    });
+  },
+
+  handleAjaxOneWord: function (result) {
+    if (result === false) {
+      this.currentWordId--;
+    }
   },
 
   startGgamji: function () {
@@ -37,7 +72,28 @@ Ggamji.prototype = {
     });
   },
 
-  inputEvent: function () {
+  setWord: function (data) {
+    this.words = data;
+    this.$target.text(this.words.name);
+    this.targetText = this.words.name;
+  },
+
+  nextWord: function () {
+    this.currentWordId++;
+    this.requestOneWord(this.currentWordId);
+  },
+
+  prevWord: function () {
+    if (this.currentWordId <= 0) {
+      console.error('ggamji.prevWord(): currentWordId is ' + this.currentWordId);
+      return;
+    } else {
+      this.currentWordId--;
+    }
+    this.requestOneWord(this.currentWordId);
+  },
+
+  addInputEventHandler: function () {
     var _this = this;
 
     this.$input.on({
@@ -45,11 +101,7 @@ Ggamji.prototype = {
         switch (event.which) {
           case _this.KEY_ENTER:  // Enter key
 
-            if (_this.inputData === _this.targetText) {
-              _this.correctAnswerEvent();
-            } else {
-              _this.wrongAnswerEvent()
-            }
+            _this.examineWord();
             break;
         }
       },
@@ -67,6 +119,30 @@ Ggamji.prototype = {
     });
   },
 
+  addPrevEventHandler: function () {
+    var _this = this;
+
+    $('._prevBtn').on('click', function () {
+      _this.prevWord();
+    });
+  },
+
+  addNextEventHandler: function () {
+    var _this = this;
+
+    $('._nextBtn').on('click', function () {
+      _this.nextWord();
+    });
+  },
+
+  examineWord: function () {
+    if (this.inputData === this.targetText) {
+      this.handleCorrectAnswer();
+    } else {
+      this.handleWrongAnswer()
+    }
+  },
+
   addCorrectColor: function () {
     this.$input.addClass('correct');
   },
@@ -75,12 +151,12 @@ Ggamji.prototype = {
     this.$input.removeClass('correct');
   },
 
-  correctAnswerEvent: function () {
-    this.iterationCount();
+  handleCorrectAnswer: function () {
+    this.increaseCount();
     this.resetInput();
   },
 
-  wrongAnswerEvent: function () {
+  handleWrongAnswer: function () {
     var duration = 50;
 
     this.$input
@@ -91,7 +167,7 @@ Ggamji.prototype = {
       .animate({marginLeft: 0}, duration / 2);
   },
 
-  iterationCount: function () {
+  increaseCount: function () {
     this.countNumber++;
     this.$counter.text(this.countNumber);
   },
@@ -99,5 +175,4 @@ Ggamji.prototype = {
   resetInput: function () {
     this.$input.val('');
   }
-
 };
